@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  :root {
+    --bg-color: #121212;
+    --card-bg: #1e1e1e;
+    --border-color: #333;
+    --accent-color: #a93226;
+    --accent-hover: #cd6155;
+    --text-primary: #e0e0e0;
+    --text-secondary: #aaa;
+    --gold-text: #f39c12;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    margin: 0;
+    padding: 15px;
+    line-height: 1.6;
+  }
+
+  .nav-container {
+    background-color: #1a1a1a;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+
+  .main-nav {
+    display: flex;
+    background-color: #141414;
+    border-bottom: 2px solid var(--accent-color);
+  }
+
+  .main-nav-btn {
+    background: transparent;
+    color: var(--text-secondary);
+    border: none;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    outline: none;
+  }
+
+  .main-nav-btn:hover {
+    color: #fff;
+    background-color: #252525;
+  }
+
+  .main-nav-btn.active {
+    background-color: var(--accent-color);
+    color: #fff !important;
+  }
+
+  .sub-nav-wrapper {
+    background-color: #222222;
+    padding: 8px 12px;
+    border-top: 1px solid #2a2a2a;
+  }
+
+  .sub-nav {
+    display: none;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .sub-nav.active {
+    display: flex !important;
+  }
+
+  .sub-nav-btn {
+    background-color: #2d2d2d;
+    color: var(--text-secondary);
+    border: 1px solid #3a3a3a;
+    padding: 6px 14px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    outline: none;
+  }
+
+  .sub-nav-btn:hover {
+    background-color: #383838;
+    color: #fff;
+  }
+
+  .sub-nav-btn.active {
+    background-color: var(--gold-text) !important;
+    color: #121212 !important;
+    border-color: var(--gold-text) !important;
+    font-weight: bold;
+  }
+
+  .tab-content {
+    display: none;
+    animation: fadeIn 0.3s ease-in-out;
+  }
+
+  .tab-content.active {
+    display: block !important;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+
+  h1, h2, h3 { color: #fff; margin-top: 0; }
+  h1 { border-bottom: 1px solid #444; padding-bottom: 10px; }
+  h2 { color: var(--gold-text); border-left: 4px solid var(--accent-color); padding-left: 10px; margin-top: 20px; }
+  h3 { color: var(--accent-hover); }
+
+  .summary-box {
+    background-color: #252525;
+    border-left: 4px solid var(--gold-text);
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 0 6px 6px 0;
+  }
+
+  .summary-box ul { margin: 0; padding-left: 20px; }
+  .summary-box li { margin-bottom: 6px; }
+
+  .timeline {
+    border-left: 2px solid #444;
+    padding-left: 15px;
+    margin-left: 10px;
+  }
+
+  .timeline-item {
+    position: relative;
+    margin-bottom: 12px;
+  }
+
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -21px;
+    top: 6px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--accent-color);
+  }
+
+  .grid-2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 15px;
+  }
+
+  .npc-card {
+    background-color: #242424;
+    border: 1px solid #3d3d3d;
+    border-radius: 6px;
+    padding: 15px;
+  }
+
+  .npc-card h3 {
+    margin-bottom: 6px;
+    border-bottom: 1px solid #444;
+    padding-bottom: 4px;
+  }
+
+  .tag {
+    display: inline-block;
+    background-color: #333;
+    color: var(--gold-text);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    margin-bottom: 8px;
+  }
+</style>
+</head>
+<body>
+
+  <div class="nav-container">
+    <div class="main-nav">
+      <button type="button" class="main-nav-btn active" data-menu="menu-session1">第一次團</button>
+      <button type="button" class="main-nav-btn" data-menu="menu-npc">NPC 圖鑑</button>
+    </div>
+
+    <div class="sub-nav-wrapper">
+      <div id="menu-session1" class="sub-nav active">
+        <button type="button" class="sub-nav-btn active" data-tab="tab-session1-main">總覽與印象</button>
+        <button type="button" class="sub-nav-btn" data-tab="tab-scene1">場景一：離別與祈禱</button>
+        <button type="button" class="sub-nav-btn" data-tab="tab-scene2">場景二：深夜露營</button>
+        <button type="button" class="sub-nav-btn" data-tab="tab-scene3">場景三：晨曦探索</button>
+        <button type="button" class="sub-nav-btn" data-tab="tab-scene4">場景四：邊境大門</button>
+        <button type="button" class="sub-nav-btn" data-tab="tab-scene5">場景五：抵達村莊</button>
+        <button type="button" class="sub-nav-btn" data-tab="tab-scene6">場景六：酒館爭執</button>
+        <button type="button" class="sub-nav-btn" data-tab="tab-scene7">場景七：大宅暴動</button>
+      </div>
+
+      <div id="menu-npc" class="sub-nav">
+        <button type="button" class="sub-nav-btn" data-tab="tab-npc-house">死亡之屋</button>
+        <button type="button" class="sub-nav-btn" data-tab="tab-npc-village">巴羅維亞村</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: 第一次團 主頁 -->
+  <div id="tab-session1-main" class="tab-content active">
+    <div class="card">
+      <h1>全日團錄總體總結 (Session 1)</h1>
+      <p><strong>日期：</strong> 2026年10月24日 | <strong>語言：</strong> 粵語 | <strong>時長：</strong> 187分鐘</p>
+      
+      <div class="summary-box">
+        <h3>全日冒險地圖與足跡</h3>
+        <ul>
+          <li><strong>歷經地點：</strong> 死亡大宅廢墟外的磨坊森林 ➔ 森林營地 ➔ 巴羅維亞邊境大門 ➔ 巴羅維亞村（外圍拒馬、中央廣場、血之葡萄酒館、村長大宅）。</li>
+          <li><strong>遇見人物：</strong> 孩子們的靈魂（羅斯、霍恩）、掌櫃、伊斯馬黑（少村長）、比爾德拉斯（雜貨店主）、瘋狂瑪麗、科里安（老村長）、伊莉娜、阿倫卡（暴民領隊）。</li>
+          <li><strong>關鍵線索與傳聞：</strong>
+            <ul>
+              <li><strong>巴羅維亞困境：</strong> 土地被迷霧與吸血鬼領主「斯特拉德（Strahd）」封鎖，死者靈魂無法離去。</li>
+              <li><strong>90天最後通牒：</strong> 革命軍失敗後，精靈宣佈了90天期限，今夜即為最後期限，不死生物大軍將全面進攻。</li>
+              <li><strong>神祕標記：</strong> 邊境死者指著「Cross、箭頭、13」標記，指南針指向左側被濃霧包圍的森林。</li>
+              <li><strong>重要信件：</strong> 獲得科里安老村長寫給瓦拉克奇鎮男爵/Lady Fiona及克雷茲克鎮副鎮長介紹信。</li>
+            </ul>
+          </li>
+          <li><strong>面臨挑戰與困難：</strong> 穿越死寂凍人的迷霧森林、擺脫深夜陰森恐懼、安撫因絕望而暴動的村民（防止獻祭伊莉娜）、籌備今夜的不死生物防禦戰。</li>
+          <li><strong>獲得事物：</strong> 晨曦之主聖光庇佑感、微光蠟燭、神秘指南針、介紹信、村長家的膳食庇護與火煙瓶支援。</li>
+          <li><strong>失去事物：</strong> 瑪霖累積 1 層力竭（Exhaustion）狀態、阿榭爾沾血上衣（用於安葬）。</li>
+        </ul>
+      </div>
+
+      <h2>【跑團印象與玩家複盤】</h2>
+      <div class="grid-2">
+        <div class="npc-card">
+          <h3>阿榭爾 (刀鞘)</h3>
+          <p><strong>最有印象劇情：</strong> 村長大宅前的暴民衝突。</p>
+          <p><strong>角色心態：</strong> 認為伊斯馬黑作為領袖雖然承受謾罵，但其堅守與付出終將在成功後化為榮耀。堅持實用主義正義與騎士驕傲。</p>
+        </div>
+        <div class="npc-card">
+          <h3>瑪莎 (阿密)</h3>
+          <p><strong>角色定位：</strong> 聖騎士 (Paladin)。</p>
+          <p><strong>角色心態：</strong> 雖然未許下誇張誓言，但行動上堅定選擇保護弱小。無論如何都要努力讓大家活下去，並幫助哥哥找到女兒。</p>
+        </div>
+        <div class="npc-card">
+          <h3>瑪霖 (Gordon)</h3>
+          <p><strong>角色定位：</strong> 遊俠 / 黑暗力量使用者。</p>
+          <p><strong>角色心態：</strong> 最想探究斯特拉德背後的動機與真相，堅守對女兒的思念與對弱者的憐憫，願意承擔守夜責任。</p>
+        </div>
+        <div class="npc-card">
+          <h3>雅律・琺珂 (Chiu)</h3>
+          <p><strong>角色定位：</strong> 通靈者 / 占卜師。</p>
+          <p><strong>角色心態：</strong> 理性且保持體面尊嚴，依靠水晶球與卡牌為隊伍提供指引，極度渴望解決事件後返回深水城。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: 場景一 -->
+  <div id="tab-scene1" class="tab-content">
+    <div class="card">
+      <h2>場景一：死亡大宅外的離別與祈禱</h2>
+      <div class="summary-box">
+        <ul>
+          <li><strong>玩家位置：</strong> 死亡大宅廢墟外／磨坊附近的森林邊緣</li>
+          <li><strong>遇見人物：</strong> 孩子們的靈魂（羅斯 Rosavalda 與 霍恩 Thornbold）</li>
+          <li><strong>線索／傳聞：</strong> 孩子們提及此處為家鄉巴羅維亞；森林毫無生機，泥土乾涸無蟲，養分全被大樹抽乾。</li>
+          <li><strong>挑戰／困難：</strong> 面對浩劫後的創傷、離別的悲哀，以及缺乏鮮花進行適當安葬儀式的窘境。</li>
+          <li><strong>獲得：</strong> 孩子靈魂安息帶來的內心平靜、晨曦之主的宗教感悟。</li>
+          <li><strong>失去：</strong> 阿榭爾沾滿血跡的上衣（作為陪葬品埋入墳墓）。</li>
+        </ul>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item">主持人回顧逃離死亡之屋經過，引導眾人注意到眼前通往森林的道路與破碎磨坊。</div>
+        <div class="timeline-item">（場外）阿榭爾說明其決定出於實用主義正義，選擇奧術是為了計算與掌控局面。</div>
+        <div class="timeline-item">瑪霖感覺到牽著孩子靈魂的手被拉了一下，嘗試擁抱空氣並發出小女孩的聲音自言自語。</div>
+        <div class="timeline-item">瑪莎將嬰兒遺骨與孩子們一齊埋葬在大屋前。雅律・琺珂表示能理解瑪霖的舉動。</div>
+        <div class="timeline-item">阿榭爾與雅律・琺珂討論傳送力量與背後掌控者，決定先安置孩子靈魂。</div>
+        <div class="timeline-item">瑪霖與瑪莎為三兄妹下葬。阿榭爾進行宗教檢定（21），將晨曦之主祈禱文改編為悼詞。</div>
+        <div class="timeline-item">瑪霖進行生存檢定（20），發現泥土乾涸無生機，養分被樹木抽乾。阿榭爾召喚黃色小花獻上希望。</div>
+        <div class="timeline-item">阿榭爾脫下沾血上衣一同安葬，暫時赤裸上身。瑪霖提議尋找水源與村落休息。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: 場景二 -->
+  <div id="tab-scene2" class="tab-content">
+    <div class="card">
+      <h2>場景二：深夜露營與身份交流</h2>
+      <div class="summary-box">
+        <ul>
+          <li><strong>玩家位置：</strong> 森林邊緣的臨時營地</li>
+          <li><strong>遇見人物：</strong> 無（僅隊友之間）</li>
+          <li><strong>線索／傳聞：</strong> 占卜顯示「棺材」牌（安全棲息地）與「斯特拉德」（男人、蠟燭、咖啡，可能指引離開）。得知眾人背景（深水城、絕冬城、尋找失蹤女兒）。</li>
+          <li><strong>挑戰／困難：</strong> 柴火濕透無法正常燃燒、夜間森林異常死寂無聲。</li>
+          <li><strong>獲得：</strong> 相互了解隊友背景與能力、短暫長休、墓碑旁神祕出現的溫暖紅色蠟燭。</li>
+          <li><strong>失去：</strong> 無。</li>
+        </ul>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item">雅律・琺珂點燃濕柴散發煙霧驅敵，並進行水晶球卡牌占卜，抽出「棺材」牌解讀為安全棲息地。</div>
+        <div class="timeline-item">眾人圍坐自我介紹：瑪霖與瑪莎來自離費倫不遠處；雅律・琺珂來自深水城；阿榭爾來自絕冬城。</div>
+        <div class="timeline-item">瑪霖講述恩師理查教導引導黑暗力量；雅律・琺珂分享天生通靈；阿榭爾說明自學奧術與戰術結合；瑪莎說明尋找瑪霖女兒的初衷。</div>
+        <div class="timeline-item">瑪霖試圖點火卻陷入徹底黑暗，周圍死寂無聲。雅律・琺珂點亮紅色蠟燭，瑪霖點亮油燈。</div>
+        <div class="timeline-item">阿榭爾感知天氣，發現地下濕氣重，推測近期無雨。雅律・琺珂占卜「斯特拉德」，抽中「男人/蠟燭/咖啡」。</div>
+        <div class="timeline-item">瑪霖自告奮勇擔任第一班守夜。眾人注意到孩子墓碑旁莫名多出溫暖點燃的紅色蠟燭。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: 場景三 -->
+  <div id="tab-scene3" class="tab-content">
+    <div class="card">
+      <h2>場景三：漫長的黑夜與晨曦探索</h2>
+      <div class="summary-box">
+        <ul>
+          <li><strong>玩家位置：</strong> 森林營地</li>
+          <li><strong>遇見人物：</strong> 無</li>
+          <li><strong>線索／傳聞：</strong> 森林具備死界/冥界般壓迫感；樹木上的濃霧帶極致寒意（Frostbite）；濃霧刻意留下一條通道；領主擁有土地一切的法律觀念；占卜抽出「騎手」牌（長驅直入）。</li>
+          <li><strong>挑戰／困難：</strong> 樹木堅硬如石無法破壞或攀爬；濃霧帶有極致寒意；漫長死寂夜晚帶來的精神恐懼；缺乏充分休息。</li>
+          <li><strong>獲得：</strong> 迎來清晨微光（確定有晝夜交替）、占卜指引的方向。</li>
+          <li><strong>失去：</strong> 瑪霖因獨自守夜累積 1 層力竭（Exhaustion）狀態。</li>
+        </ul>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item">瑪莎嘗試用劍柄重擊樹幹（力量14），樹堅如石差點震斷指骨。嘗試攀爬亦被瑪霖勸阻。</div>
+        <div class="timeline-item">瑪霖獨自守夜，感應到森林死寂無生機，宛如步入冥界與死亡，極度不安。</div>
+        <div class="timeline-item">天邊出現微光，灰暗烏雲覆蓋天空。日出微光讓瑪霖擺脫縈繞整晚的恐懼。</div>
+        <div class="timeline-item">隊友醒來。阿榭爾感謝瑪霖守夜。阿榭爾嘗試爬樹，觸碰樹幹濃霧遭受極致寒意（Frostbite）迫使鬆手。</div>
+        <div class="timeline-item">阿榭爾進行自然檢定（18），意識到濃霧危險但刻意留出一條道路。提醒大家領主法律，切勿破壞。</div>
+        <div class="timeline-item">雅律・琺珂占卜抽出「騎手（Rider）」牌，解讀為可長驅直入。雅律・琺珂為瑪莎抽牌，表示瑪莎可能帶來光明。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: 場景四 -->
+  <div id="tab-scene4" class="tab-content">
+    <div class="card">
+      <h2>場景四：巴羅維亞大門與死者</h2>
+      <div class="summary-box">
+        <ul>
+          <li><strong>玩家位置：</strong> 巴羅維亞邊境大門／灌木叢</li>
+          <li><strong>遇見人物：</strong> 灌木叢中的村民屍體（已死）</li>
+          <li><strong>線索／傳聞：</strong> 大門建築為七八百年前古老精靈風格但符文陌生；大門自動開啟與關閉（被某存在注視）；死者因力竭而死；指南針指向被濃霧包圍的森林；樹上刻有「Cross、箭頭、13」標記。</li>
+          <li><strong>挑戰／困難：</strong> 濃霧遮蔽高空視野、自動關閉的大門帶來的心理壓迫感、處理死者屍體。</li>
+          <li><strong>獲得：</strong> 神秘指南針（指針劇烈顫抖指向森林）。</li>
+          <li><strong>失去：</strong> 無。</li>
+        </ul>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item">眾人沿道路前進40分鐘，前方出現巨大石質扶壁、城牆與大鐵門，兩側有風化的無頭雕像。</div>
+        <div class="timeline-item">阿榭爾研究建築（歷史1），推測為古老精靈風格，符文完全陌生。</div>
+        <div class="timeline-item">眾人靠近時，緊閉的大鐵門自動向兩側打開。阿榭爾率先跨過，聞到血腥味並以手語示意。</div>
+        <div class="timeline-item">雅律・琺珂以《傳訊術》通話，阿榭爾確認灌木叢有屍體。阿榭爾用錘撥開灌木將屍體拉至大路。</div>
+        <div class="timeline-item">瑪霖進行醫術檢定（18），確認死者無致命外傷，死於極度體力耗盡（力竭）。手握指針劇烈顫抖的指南針。</div>
+        <div class="timeline-item">瑪莎與阿榭爾察覺檢定（16），發現樹幹刻有 Cross 符號、箭頭及數字「13」。指南針指向被濃霧包圍的森林。</div>
+        <div class="timeline-item">阿榭爾與瑪霖將死者就地安葬。瑪莎嘗試攀爬閘樓，因濃霧包圍視野被遮而作罷。</div>
+        <div class="timeline-item">眾人跨過大門後，大鐵門「砰」一聲自動重重關閉，眾人意識到已落入某存在（斯特拉德）注視中。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: 場景五 -->
+  <div id="tab-scene5" class="tab-content">
+    <div class="card">
+      <h2>場景五：抵達巴羅維亞村與防線</h2>
+      <div class="summary-box">
+        <ul>
+          <li><strong>玩家位置：</strong> 巴羅維亞村（Village of Barovia）外圍與中央廣場</li>
+          <li><strong>遇見人物：</strong> 伊斯馬黑・波利亞洛維奇（少村長）、村莊守衛與村民</li>
+          <li><strong>線索／傳聞：</strong> 村莊遭遇不死生物大軍襲擊，離日落僅剩3小時；逃跑者欲尋找維斯坦尼亞人與伊娃夫人；曾祖父雕像記載「吸血鬼之災，618-662 B.C.」。</li>
+          <li><strong>挑戰／困難：</strong> 進入戒備森嚴且充滿敵意的村莊、應對守衛的箭拔弩張。</li>
+          <li><strong>獲得：</strong> 進入巴羅維亞村的許可、少村長伊斯馬黑的接納與引領。</li>
+          <li><strong>失去：</strong> 無。</li>
+        </ul>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item">眾人走出森林，眼前展現被群山與雷雨雲包圍的山谷，遠處山頂矗立著黑漆漆的鴉閣城堡（Castle Ravenloft）。</div>
+        <div class="timeline-item">來到巴羅維亞村，外圍挖有溝渠木樁，堆疊破舊傢俬。屋頂有守衛巡邏，村民在配劍海甲男子帶領下修補拒馬。</div>
+        <div class="timeline-item">藍翅烏鴉飛過。守衛發現眾人並舉弓喝止。配劍男子跳下拒馬制止守衛，自我介紹為伊斯馬黑（Ismark）。</div>
+        <div class="timeline-item">伊斯馬黑帶領眾人入村，透露今晚日落前僅剩3小時，不死生物大軍即將襲擊。提及大門前的死者為尋找維斯坦尼亞人與伊娃夫人的逃亡者。</div>
+        <div class="timeline-item">來到中央廣場，村民面色陰沉疲憊。廣場立有曾祖父雕像（偉大的伊斯馬黑，吸血鬼之災）。瑪霖對吸血鬼提高警惕。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: 場景六 -->
+  <div id="tab-scene6" class="tab-content">
+    <div class="card">
+      <h2>場景六：血之葡萄酒館的爭執</h2>
+      <div class="summary-box">
+        <ul>
+          <li><strong>玩家位置：</strong> 血之葡萄酒館（Blood of the Vine Tavern）</li>
+          <li><strong>遇見人物：</strong> 吧台掌櫃、伊斯馬黑、比爾德拉斯（Bildrath）、瘋狂瑪麗（Mad Mary）</li>
+          <li><strong>線索／傳聞：</strong> 斯特拉德（Strahd）為吸血鬼領主，土地被迷霧封鎖，死者靈魂無法離開；3個月前多魯率革命軍討伐失敗；精靈宣布90天期限，今夜為最後期限；瑪麗的女兒格格老衲（Gertruda）昨夜失蹤。</li>
+          <li><strong>挑戰／困難：</strong> 處理比爾德拉斯的絕望與言語挑釁、肢體衝突、面對村民的絕望氛圍。</li>
+          <li><strong>獲得：</strong> 酒精與水份補充、巴羅維亞世界觀與背景歷史的全面認知。</li>
+          <li><strong>失去：</strong> 無。</li>
+        </ul>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item">進入酒館落座。雅律・琺珂點葡萄酒，瑪霖與瑪莎點啤酒，阿榭爾要了一杯水。</div>
+        <div class="timeline-item">伊斯馬黑透露巴羅維亞被迷霧封鎖，統治者為強大吸血鬼斯特拉德。阿榭爾展示大宅信件，伊斯馬黑證實其真實性。</div>
+        <div class="timeline-item">比爾德拉斯（Bildrath）拍桌怒罵伊斯馬黑。透露3個月前多魯率革命軍討伐失敗，精靈給予90天期限，今夜即為最後期限。</div>
+        <div class="timeline-item">比爾德拉斯因家人聽信號召留下慘死而悔恨痛哭，主張「當初大家該逃跑而非無謂抵抗」。瑪霖反駁其逃避。</div>
+        <div class="timeline-item">瑪莎潑水讓兩人清醒，大喊應討論保衛村莊。阿榭爾詢問是否曾嘗試和解，伊斯馬黑表示絕不低頭。</div>
+        <div class="timeline-item">瘋狂瑪麗（Mad Mary）衝入哭喊女兒格格老衲昨夜失蹤，伊斯馬黑承諾組搜救隊。比爾德拉斯冷嘲熱諷，瑪霖欲揮掌被伊斯馬黑攔下。比爾德拉斯離開。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: 場景七 -->
+  <div id="tab-scene7" class="tab-content">
+    <div class="card">
+      <h2>場景七：村長大宅前的暴動與軍事佈署</h2>
+      <div class="summary-box">
+        <ul>
+          <li><strong>玩家位置：</strong> 村長大宅（Mayor's Mansion）</li>
+          <li><strong>遇見人物：</strong> 老村長科里安（Kolyan）、伊莉娜（Ireena）、阿倫卡（Alenka，暴民領頭）</li>
+          <li><strong>線索／傳聞：</strong> 暴民欲將紅髮女人伊莉娜獻祭給斯特拉德；伊莉娜非親生，為14年前湖邊撿回；村中有60名老弱、30名戰鬥力，敵軍有數百至上千不死生物；介紹信可尋瓦拉克奇鎮男爵/Lady Fiona或克雷茲克鎮副鎮長。</li>
+          <li><strong>挑戰／困難：</strong> 平息暴民圍攻大宅的流血衝突、規劃兵力極度懸殊的防守戰略。</li>
+          <li><strong>獲得：</strong> 老村長科里安的介紹信、村長家的膳食與住所庇護、伊莉娜提供的火煙瓶支援。</li>
+          <li><strong>失去：</strong> 無。</li>
+        </ul>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item">雅律・琺珂欲沐浴，掌櫃表示無設施且水資源珍貴。眾人隨伊斯馬黑來到村長大宅（已被破壞三成）。</div>
+        <div class="timeline-item">門前聚集暴民，領頭婦人阿倫卡要求交出紅髮女人伊莉娜獻祭給斯特拉德換取安全。老村長科里安嚴詞拒絕，暴民衝鋒。</div>
+        <div class="timeline-item">瑪莎擲出標槍插在中間震懾暴民。阿榭爾衝上前舉盾擋在村長前，義正辭嚴勸說，暴民羞愧退去，阿倫卡放下狠話離開。</div>
+        <div class="timeline-item">科里安與伊莉娜表達感激並邀請入內。眾人落座，注意到伊莉娜的紅髮，科里安透露其為14年前湖邊撿回撫養。</div>
+        <div class="timeline-item">展開防守戰術討論：阿榭爾反對死守，主張利用地形建立多重防線與機動輪換制。</div>
+        <div class="timeline-item">分工：阿榭爾與瑪莎加入外圍機動防線（利用火煙瓶伏擊削弱敵人），雅律・琺珂與瑪霖留守中央保護村民。</div>
+        <div class="timeline-item">科里安交給瑪霖一封介紹信（可去瓦拉克奇鎮或克雷茲克鎮尋求庇護）。眾人把握最後2.5小時進行戰前整備。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: NPC圖鑑 - 死亡之屋 -->
+  <div id="tab-npc-house" class="tab-content">
+    <div class="card">
+      <h2>NPC 圖鑑 ── 死亡之屋 (Death House)</h2>
+      <div class="grid-2">
+        <div class="npc-card">
+          <h3>羅斯・杜斯特</h3>
+          <span class="tag">Rosavalda Rose Durst</span> <span class="tag">長女靈魂</span>
+          <p><strong>登場場景：</strong> 場景一</p>
+          <p><strong>外貌特徵：</strong> 小女孩幽靈狀態，聲音清脆而略帶哀傷。</p>
+          <p><strong>當前態度：</strong> 友善、依戀玩家（附身於瑪霖身上），渴望靈魂獲得解脫。</p>
+          <p><strong>背景線索：</strong> 死亡之屋男主人與女主人的親生長女。生前被邪教父母困於閣樓飢餓致死。其靈魂陪伴眾人走出大宅，最終願望是將骸骨安葬於家鄉的風車磨坊旁。</p>
+        </div>
+        <div class="npc-card">
+          <h3>霍恩・杜斯特</h3>
+          <span class="tag">Thornbold Thorn Durst</span> <span class="tag">幼子靈魂</span>
+          <p><strong>登場場景：</strong> 場景一</p>
+          <p><strong>外貌特徵：</strong> 抱著絨毛玩具的小男孩幽靈。</p>
+          <p><strong>當前態度：</strong> 膽小、依附姐姐與玩家。</p>
+          <p><strong>背景線索：</strong> 杜斯特家族的小兒子，與姐姐羅斯一同被鎖在閣樓餓死。靈魂與姐姐一同得到眾人的接納與安葬。</p>
+        </div>
+        <div class="npc-card">
+          <h3>私生子嬰兒 / 瓦爾特</h3>
+          <span class="tag">Walter Durst</span> <span class="tag">私生子 / 怪物核心</span>
+          <p><strong>登場場景：</strong> 場景一 (提及)</p>
+          <p><strong>外貌特徵：</strong> 嬰兒遺骨，生前曾被邪教儀式扭曲為大宅地底的巨型肉塊怪物。</p>
+          <p><strong>當前態度：</strong> 已解脫（已被眾人終結怪物形態）。</p>
+          <p><strong>背景線索：</strong> 男主人與保姆（哈拉拉）出軌所生的私生子。死後被邪教力量改變為吞噬無辜者的怪獸。眾人終結了其怪物形態，並將其遺骨與兄姐一同安葬。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: NPC圖鑑 - 巴羅維亞村 -->
+  <div id="tab-npc-village" class="tab-content">
+    <div class="card">
+      <h2>NPC 圖鑑 ── 巴羅維亞村 (Village of Barovia)</h2>
+      <div class="grid-2">
+        <div class="npc-card">
+          <h3>伊斯馬黑・波利亞洛維奇</h3>
+          <span class="tag">Ismark Kolyanovich</span> <span class="tag">巴羅維亞少村長</span>
+          <p><strong>登場場景：</strong> 場景五、六、七</p>
+          <p><strong>外貌特徵：</strong> 身穿腰間配劍與海甲，眼神流露著疲憊與深深的無奈。</p>
+          <p><strong>當前態度：</strong> 友善、接納、極具責任感，一心想保護村莊與妹妹。</p>
+          <p><strong>背景線索：</strong> 偉大村長曾祖父的後代，在村莊危難之際接下重擔。雖然被部分絕望村民指責，仍堅守崗位，承諾為玩家提供食宿與火煙瓶。</p>
+        </div>
+        <div class="npc-card">
+          <h3>科里安・印第洛維奇</h3>
+          <span class="tag">Kolyan Indirovich</span> <span class="tag">巴羅維亞老村長</span>
+          <p><strong>登場場景：</strong> 場景七</p>
+          <p><strong>外貌特徵：</strong> 年長貴族，手持手杖，腹部、額頭與左膝纏滿厚重繃帶，帶有資深戰士底蘊。</p>
+          <p><strong>當前態度：</strong> 堅毅、正直、愛護家人與村民，謝絕背叛行為。</p>
+          <p><strong>背景線索：</strong> 14年前在湖邊撿回伊莉娜並撫養長大。堅決反對將伊莉娜獻祭給惡魔，寫下介紹信幫助玩家前往瓦拉克奇鎮或克雷茲克鎮。</p>
+        </div>
+        <div class="npc-card">
+          <h3>伊莉娜・科里亞諾維奇</h3>
+          <span class="tag">Ireena Kolyana</span> <span class="tag">養女 / 戰士</span>
+          <p><strong>登場場景：</strong> 場景七</p>
+          <p><strong>外貌特徵：</strong> 面色蒼白，留有一頭長長的鮮艷紅髮，身穿鋼製胸甲與灰色長袍，腰佩細劍（Rapier）。</p>
+          <p><strong>當前態度：</strong> 勇敢、警惕、對外面的世界充滿好奇。</p>
+          <p><strong>背景線索：</strong> 非村長親生，傳言吸血鬼斯特拉德對其極度渴求。她正於村南監督製作火煙瓶以支援防衛戰。</p>
+        </div>
+        <div class="npc-card">
+          <h3>比爾德拉斯</h3>
+          <span class="tag">Bildrath</span> <span class="tag">雜貨店老闆</span>
+          <p><strong>登場場景：</strong> 場景六</p>
+          <p><strong>外貌特徵：</strong> 身材矮小半駝，頭髮油膩灰白，穿著滿是補丁的舊衣服。</p>
+          <p><strong>當前態度：</strong> 極度絕望、憤世嫉俗、酗酒逃避、言語冷酷毒辣。</p>
+          <p><strong>背景線索：</strong> 當初本想離開村莊，但因妹妹瑪爾塔與妹夫聽信伊斯馬黑號召留下抵抗，不忍拋棄家人而留守。家人慘死後極度悔恨，認為「當初大家該逃跑而非無謂抵抗」。在村中經營雜貨店。</p>
+        </div>
+        <div class="npc-card">
+          <h3>阿倫卡</h3>
+          <span class="tag">Alenka</span> <span class="tag">暴民領頭婦人</span>
+          <p><strong>登場場景：</strong> 場景七</p>
+          <p><strong>外貌特徵：</strong> 手持草叉，舉止瘋狂歇斯底里的中年婦人。</p>
+          <p><strong>當前態度：</strong> 敵意、歇斯底里、盲從迷信。</p>
+          <p><strong>背景線索：</strong> 在極度恐懼下喪失理智，主張將紅髮女人伊莉娜獻祭給斯特拉德以換取村莊安全，最終被瑪莎與阿榭爾震懾退去。</p>
+        </div>
+        <div class="npc-card">
+          <h3>瘋狂瑪麗</h3>
+          <span class="tag">Mad Mary</span> <span class="tag">悲傷的母親</span>
+          <p><strong>登場場景：</strong> 場景六</p>
+          <p><strong>外貌特徵：</strong> 身穿破爛斗篷，頭髮紮雙髻，雙眼哭得紅腫充血，聲音沙啞悲慘。</p>
+          <p><strong>當前態度：</strong> 陷入極度恐懼與悲傷中。</p>
+          <p><strong>背景線索：</strong> 其女兒格格老衲（Gertruda）昨夜失蹤，懷疑獨自跑去了瓦拉克奇鎮，懇求少村長幫忙尋找。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var mainNavBtns = document.querySelectorAll('.main-nav-btn');
+    var subNavs = document.querySelectorAll('.sub-nav');
+    var subNavBtns = document.querySelectorAll('.sub-nav-btn');
+    var tabContents = document.querySelectorAll('.tab-content');
+
+    mainNavBtns.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var targetMenuId = this.getAttribute('data-menu');
+        mainNavBtns.forEach(function(b) { b.classList.remove('active'); });
+        this.classList.add('active');
+
+        subNavs.forEach(function(s) { s.classList.remove('active'); });
+        var targetSubNav = document.getElementById(targetMenuId);
+        if (targetSubNav) {
+          targetSubNav.classList.add('active');
+          var firstSubBtn = targetSubNav.querySelector('.sub-nav-btn');
+          if (firstSubBtn) {
+            firstSubBtn.click();
+          }
+        }
+      });
+    });
+
+    subNavBtns.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var targetTabId = this.getAttribute('data-tab');
+        var currentSubNav = this.closest('.sub-nav');
+        if (currentSubNav) {
+          currentSubNav.querySelectorAll('.sub-nav-btn').forEach(function(b) { b.classList.remove('active'); });
+        }
+        this.classList.add('active');
+
+        tabContents.forEach(function(c) { c.classList.remove('active'); });
+        var targetContent = document.getElementById(targetTabId);
+        if (targetContent) {
+          targetContent.classList.add('active');
+        }
+      });
+    });
+  });
+</script>
+
+</body>
+</html>
