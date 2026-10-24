@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  :root {
+    --bg-color: #121212;
+    --card-bg: #1e1e1e;
+    --border-color: #333;
+    --accent-color: #a93226;
+    --accent-hover: #cd6155;
+    --text-primary: #e0e0e0;
+    --text-secondary: #aaa;
+    --gold-text: #f39c12;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    margin: 0;
+    padding: 15px;
+    line-height: 1.6;
+  }
+
+  .nav-container {
+    background-color: #1a1a1a;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+
+  .main-nav {
+    display: flex;
+    background-color: #141414;
+    border-bottom: 2px solid var(--accent-color);
+  }
+
+  .main-nav-btn {
+    background: transparent;
+    color: var(--text-secondary);
+    border: none;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .main-nav-btn:hover { color: #fff; background-color: #252525; }
+  .main-nav-btn.active { background-color: var(--accent-color); color: #fff !important; }
+
+  .sub-nav-wrapper {
+    background-color: #222222;
+    padding: 8px 12px;
+    border-top: 1px solid #2a2a2a;
+  }
+
+  .sub-nav { display: none; flex-wrap: wrap; gap: 6px; }
+  .sub-nav.active { display: flex !important; }
+
+  .sub-nav-btn {
+    background-color: #2d2d2d;
+    color: var(--text-secondary);
+    border: 1px solid #3a3a3a;
+    padding: 6px 14px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+
+  .sub-nav-btn:hover { background-color: #383838; color: #fff; }
+  .sub-nav-btn.active {
+    background-color: var(--gold-text) !important;
+    color: #121212 !important;
+    border-color: var(--gold-text) !important;
+    font-weight: bold;
+  }
+
+  .tab-content { display: none; animation: fadeIn 0.3s ease-in-out; }
+  .tab-content.active { display: block !important; }
+
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  .card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+
+  h1, h2, h3 { color: #fff; margin-top: 0; }
+  h1 { border-bottom: 1px solid #444; padding-bottom: 10px; }
+  h2 { color: var(--gold-text); border-left: 4px solid var(--accent-color); padding-left: 10px; margin-top: 20px; }
+
+  .summary-box {
+    background-color: #252525;
+    border-left: 4px solid var(--gold-text);
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 0 6px 6px 0;
+  }
+
+  .timeline { border-left: 2px solid #444; padding-left: 15px; margin-left: 10px; }
+  .timeline-item { position: relative; margin-bottom: 12px; }
+  .timeline-item::before {
+    content: ''; position: absolute; left: -21px; top: 6px; width: 8px; height: 8px;
+    border-radius: 50%; background-color: var(--accent-color);
+  }
+</style>
+</head>
+<body>
+
+  <div class="nav-container">
+    <div class="main-nav">
+      <button type="button" class="main-nav-btn active" data-menu="menu-session2">第二次團</button>
+      <button type="button" class="main-nav-btn" data-menu="menu-npc-s2">新登場 NPC</button>
+    </div>
+
+    <div class="sub-nav-wrapper">
+      <div id="menu-session2" class="sub-nav active">
+        <button type="button" class="sub-nav-btn active" data-tab="tab-s2-main">總覽與印象</button>
+        <button type="button" class="sub-nav-btn" data-tab="tab-s2-scene1">場景一：防衛戰爆發</button>
+      </div>
+
+      <div id="menu-npc-s2" class="sub-nav">
+        <button type="button" class="sub-nav-btn" data-tab="tab-s2-npc">新角色圖鑑</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: 第二次團 主頁 -->
+  <div id="tab-s2-main" class="tab-content active">
+    <div class="card">
+      <h1>全日團錄總體總結 (Session 2)</h1>
+      <p><strong>日期：</strong> 待更新 | <strong>時長：</strong> 待更新</p>
+      <div class="summary-box">
+        <h3>第二次團冒險摘要</h3>
+        <p>（此處為預留位置，下次跑團後填入最新總結。）</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: 第二次團 場景一 -->
+  <div id="tab-s2-scene1" class="tab-content">
+    <div class="card">
+      <h2>場景一：防衛戰爆發</h2>
+      <div class="summary-box">
+        <ul>
+          <li><strong>玩家位置：</strong> 巴羅維亞村外圍拒馬防線</li>
+          <li><strong>遇見人物：</strong> 不死生物大軍</li>
+        </ul>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item">日落時分到來，濃霧中傳來死者悽厲的叫聲，防衛戰正式打響……</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: 新 NPC -->
+  <div id="tab-s2-npc" class="tab-content">
+    <div class="card">
+      <h2>第二次團登場 NPC</h2>
+      <p>（預留位置：填入第二次團登場的新角色卡片。）</p>
+    </div>
+  </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var mainNavBtns = document.querySelectorAll('.main-nav-btn');
+    var subNavs = document.querySelectorAll('.sub-nav');
+    var subNavBtns = document.querySelectorAll('.sub-nav-btn');
+    var tabContents = document.querySelectorAll('.tab-content');
+
+    mainNavBtns.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var targetMenuId = this.getAttribute('data-menu');
+        mainNavBtns.forEach(function(b) { b.classList.remove('active'); });
+        this.classList.add('active');
+
+        subNavs.forEach(function(s) { s.classList.remove('active'); });
+        var targetSubNav = document.getElementById(targetMenuId);
+        if (targetSubNav) {
+          targetSubNav.classList.add('active');
+          var firstSubBtn = targetSubNav.querySelector('.sub-nav-btn');
+          if (firstSubBtn) firstSubBtn.click();
+        }
+      });
+    });
+
+    subNavBtns.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var targetTabId = this.getAttribute('data-tab');
+        var currentSubNav = this.closest('.sub-nav');
+        if (currentSubNav) {
+          currentSubNav.querySelectorAll('.sub-nav-btn').forEach(function(b) { b.classList.remove('active'); });
+        }
+        this.classList.add('active');
+
+        tabContents.forEach(function(c) { c.classList.remove('active'); });
+        var targetContent = document.getElementById(targetTabId);
+        if (targetContent) targetContent.classList.add('active');
+      });
+    });
+  });
+</script>
+
+</body>
+</html>
